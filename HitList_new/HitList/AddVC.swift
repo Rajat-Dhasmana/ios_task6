@@ -10,11 +10,9 @@ import UIKit
 import CoreData
 
 
-
-
 class AddVC: UIViewController {
 
-    var people : [Person] = []
+  var people : [Person] = []
   
   var selectedIndex = IndexPath()
   
@@ -24,7 +22,7 @@ class AddVC: UIViewController {
   
   var selectedperson = Person()
     
-    
+//MARK: IBOutlets
     
     @IBOutlet weak var saveButton: UIButton!
     
@@ -34,7 +32,7 @@ class AddVC: UIViewController {
 
     @IBOutlet weak var addTableView: UITableView!
     
-  
+ //MARK: Controller Life Cycle
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -46,29 +44,35 @@ class AddVC: UIViewController {
             editButton.isHidden = false
             
         }
-        addTableView.dataSource = self
-        addTableView.delegate = self
-      addTableView.allowsSelection = false
       
+        addTableView.dataSource = self
+      
+        addTableView.delegate = self
+      
+        addTableView.allowsSelection = false
+      
+        editButton.setTitle("DONE", for: .selected)
         
-            editButton.setTitle("DONE", for: .selected)
-        
-            editButton.setTitle("EDIT", for: .normal)
+        editButton.setTitle("EDIT", for: .normal)
       
       
         if selectedmode == .add {
-            self.screenLabel.text = "ADD"
-            editButton.isHidden = true
+          
+          self.screenLabel.text = "ADD"
+          
+          editButton.isHidden = true
+        
         }
             
-            else {
-                self.screenLabel.text = "PEOFILE"
+        else {
+          
+          self.screenLabel.text = "PEOFILE"
             
-            addTableView.isUserInteractionEnabled = false
+          addTableView.isUserInteractionEnabled = false
                 
-            }
+        }
             
-}
+    }
     
 
     override func didReceiveMemoryWarning() {
@@ -83,152 +87,120 @@ class AddVC: UIViewController {
       
       if selectedmode == .add {
       
+       
         guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else {
-        return
-        }
-      
-        let managedContext = appDelegate.persistentContainer.viewContext
         
-        let entity = NSEntityDescription.entity(forEntityName: "Person",
-                                              in: managedContext)!
-      
-      
-        let person = Person(entity: entity,
-                          insertInto: managedContext)
-      
-      
-        for indices in index.indices {
-        
-            guard let celloftable = addTableView.cellForRow(at: index[indices]) as? EditCell else {   fatalError("not found") }
-        
-        
-            switch indices{
-                    case 0: person.name = celloftable.detailTextField.text
-            
-                    case 1: person.email = celloftable.detailTextField.text
-            
-                    case 2: person.mobile = Int64(celloftable.detailTextField.text!)!
-          
-                    case 3: person.gender = celloftable.detailTextField.text
-                  
-                    default:      fatalError("row not found")
-            
-            }
+          return
         
       }
-  
+      
+      let managedContext = appDelegate.persistentContainer.viewContext
+        
+      let entity = NSEntityDescription.entity(forEntityName: "Person" , in: managedContext)!
+      
+      let person = Person(entity: entity , insertInto: managedContext)
       
       
-    
+      for indices in index.indices {
+        
+        guard let celloftable = addTableView.cellForRow(at: index[indices]) as? EditCell else {   fatalError("not found") }
+        
+        
+        switch indices {
+          
+          case 0: person.name = celloftable.detailTextField.text
+            
+          case 1: person.email = celloftable.detailTextField.text
+            
+          case 2: person.mobile = Int64(celloftable.detailTextField.text!)!
+          
+          case 3: person.gender = celloftable.detailTextField.text
+                  
+          default:   fatalError("row not found")
+            
+        }
+        
+      }
+
     
       do {
+   
         try managedContext.save()
         
-       //   let homecontroller = self.storyboard?.instantiateViewController(withIdentifier: "HomeVCID") as! HomeVC
-       // homecontroller.people.append(person)
-        self.navigationController?.popViewController(animated: true)
+          self.navigationController?.popViewController(animated: true)
         
         
           } catch let error as NSError {
         
-        print("Could not save. \(error), \(error.userInfo)")
+              print("Could not save. \(error), \(error.userInfo)")
         
-        }
+            }
         
     
-   }
+      }
       
-//      if selectedmode == .edit {
-//       
-//        guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else {
-//          return
-//        }
-//        
-//        let managedContext = appDelegate.persistentContainer.viewContext
-//
-//        
-//        for indices in index.indices {
-//          
-//          guard let celloftable = addTableView.cellForRow(at: index[indices]) as? EditCell else {   fatalError("not found") }
-//          
-//          
-//          
-//          switch indices{
-//          case 0: selectedperson.name = celloftable.detailTextField.text
-//            
-//          case 1: selectedperson.email = celloftable.detailTextField.text
-//            
-//          case 2: selectedperson.mobile = Int64(celloftable.detailTextField.text!)!
-//            
-//          case 3: selectedperson.gender = celloftable.detailTextField.text
-//            
-//          default:      fatalError("row not found")
-//            
-//          }
-//          
-//        }
-//        
-//        appDelegate.saveContext()
-//        
-//
-//        
-//        
-//      }
   }
   
   
-  
+//MARK: Edit button tapped
 
     @IBAction func editButtonTapped(_ sender: UIButton) {
        
-        
         if sender.isSelected {
             
-            sender.isSelected = false
+          sender.isSelected = false
             
-            saveButton.isHidden = true
-          
+          saveButton.isHidden = true
           
           guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else {
+ 
             return
+          
           }
           
           
-          for indices in index.indices {
+        for indices in index.indices {
             
-            guard let celloftable = addTableView.cellForRow(at: index[indices]) as? EditCell else {   fatalError("not found") }
+          guard let celloftable = addTableView.cellForRow(at: index[indices]) as? EditCell
             
+          else {
             
+            fatalError("not found")
+          
+          }
             
+          
             switch indices{
-            case 0: selectedperson.name = celloftable.detailTextField.text
+           
+              case 0: selectedperson.name = celloftable.detailTextField.text
               
-            case 1: selectedperson.email = celloftable.detailTextField.text
+              case 1: selectedperson.email = celloftable.detailTextField.text
               
-            case 2: selectedperson.mobile = Int64(celloftable.detailTextField.text!)!
+              case 2: selectedperson.mobile = Int64(celloftable.detailTextField.text!)!
               
-            case 3: selectedperson.gender = celloftable.detailTextField.text
+              case 3: selectedperson.gender = celloftable.detailTextField.text
               
-            default:      fatalError("row not found")
+              default:      fatalError("row not found")
               
             }
             
-          }
+        }
           
-          appDelegate.saveContext()
-          
+        appDelegate.saveContext()
           
         addTableView.isUserInteractionEnabled = false
+       
         selectedmode = .view
         
         }
+        
         else {
             
             sender.isSelected = true
             saveButton.isHidden = true
             selectedmode = .edit
             addTableView.isUserInteractionEnabled = true
-            //addTableView.reloadData()
+          
           
         }
         
@@ -238,13 +210,14 @@ class AddVC: UIViewController {
 
 }
 
-
+//MARK: extension UITableViewDataSource , UITableViewDelegate
 
 extension AddVC : UITableViewDataSource , UITableViewDelegate {
   
   func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
     
     return 4
+  
   }
   
   func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -256,24 +229,24 @@ extension AddVC : UITableViewDataSource , UITableViewDelegate {
     }
     
     
-     self.index.append(indexPath)
+    self.index.append(indexPath)
   
     if selectedmode == .add {
    
-    switch indexPath.row {
+      switch indexPath.row {
         
-    case 0: cell.titleLabel.text = "NAME"
+        case 0: cell.titleLabel.text = "NAME"
       
-    case 1: cell.titleLabel.text = "Email"
+        case 1: cell.titleLabel.text = "Email"
       
-    case 2: cell.titleLabel.text = "Mobile"
+        case 2: cell.titleLabel.text = "Mobile"
             cell.detailTextField.keyboardType = .numberPad
       
-    case 3: cell.titleLabel.text = "Gender"
+        case 3: cell.titleLabel.text = "Gender"
     
-    default : fatalError("not found")
+        default : fatalError("not found")
         
-    }
+      }
     
     }
     
@@ -282,19 +255,19 @@ extension AddVC : UITableViewDataSource , UITableViewDelegate {
       
       switch indexPath.row {
         
-      case 0: cell.titleLabel.text = "NAME"
+        case 0: cell.titleLabel.text = "NAME"
               cell.detailTextField.text = selectedperson.name
         
-      case 1: cell.titleLabel.text = "Email"
+        case 1: cell.titleLabel.text = "Email"
               cell.detailTextField.text = selectedperson.email
         
-      case 2: cell.titleLabel.text = "Mobile"
+        case 2: cell.titleLabel.text = "Mobile"
               cell.detailTextField.text = String(selectedperson.mobile)
         
-      case 3: cell.titleLabel.text = "Gender"
+        case 3: cell.titleLabel.text = "Gender"
               cell.detailTextField.text = selectedperson.gender
         
-      default : fatalError("not found")
+        default : fatalError("not found")
         
       }
       
@@ -302,20 +275,21 @@ extension AddVC : UITableViewDataSource , UITableViewDelegate {
     }
     
         
-     return cell
+    return cell
     
  
   }
   
   func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+   
     return 50
  
-  
   }
   
   
 }
 
+//MARK: AddVC Table Cell
 
 class EditCell : UITableViewCell {
   

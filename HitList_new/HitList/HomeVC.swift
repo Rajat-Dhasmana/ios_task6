@@ -13,6 +13,7 @@ class HomeVC: UIViewController {
   var people: [Person] = []
   
   
+//MARK: App Lifecycle
   
   override func viewDidLoad() {
     super.viewDidLoad()
@@ -27,7 +28,8 @@ class HomeVC: UIViewController {
   override func viewWillAppear(_ animated: Bool) {
     super.viewWillAppear(animated)
     
-
+//..........................fetching data....................................
+    
     guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else {
       return
     }
@@ -50,6 +52,8 @@ class HomeVC: UIViewController {
     
   }
 
+//MARK: Clicking Add Button
+  
   @IBAction func addName(_ sender: UIBarButtonItem) {
     
 
@@ -64,21 +68,24 @@ class HomeVC: UIViewController {
 }
 
 
-// MARK: - UITableViewDataSource
+// MARK: extension UITableViewDataSource , UITableViewDelegate
+
 extension HomeVC: UITableViewDataSource , UITableViewDelegate {
 
-  func tableView(_ tableView: UITableView,
-                 numberOfRowsInSection section: Int) -> Int {
+  func tableView(_ tableView: UITableView , numberOfRowsInSection section: Int) -> Int {
+    
     return people.count
+  
   }
 
-  func tableView(_ tableView: UITableView,
-                 cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-
+  func tableView(_ tableView: UITableView , cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+    
     let person = people[indexPath.row]
-   guard let cell = tableView.dequeueReusableCell(withIdentifier: "HomeCellID",
-                                                  for: indexPath) as? HomeCell else {
-    fatalError("not found")
+    
+    guard let cell = tableView.dequeueReusableCell(withIdentifier: "HomeCellID" , for: indexPath) as? HomeCell else {
+   
+      fatalError("not found")
+    
     }
     
     cell.titleLabel?.text = person.name
@@ -91,10 +98,13 @@ extension HomeVC: UITableViewDataSource , UITableViewDelegate {
   func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
     
     
-          let editViewController = self.storyboard?.instantiateViewController(withIdentifier: "AddVCID") as! AddVC
-          editViewController.selectedmode = .view
-          editViewController.selectedperson = people[indexPath.row]
-          self.navigationController?.pushViewController(editViewController, animated: true)
+    let editViewController = self.storyboard?.instantiateViewController(withIdentifier: "AddVCID") as! AddVC
+   
+    editViewController.selectedmode = .view
+    
+    editViewController.selectedperson = people[indexPath.row]
+    
+    self.navigationController?.pushViewController(editViewController, animated: true)
     
 
     
@@ -111,6 +121,7 @@ extension HomeVC: UITableViewDataSource , UITableViewDelegate {
 
     
     switch editingStyle {
+     
       case .delete:
         
           let person = people[indexPath.row]
@@ -140,6 +151,7 @@ extension HomeVC: UITableViewDataSource , UITableViewDelegate {
   
 }
 
+//MARK: Cell Class
 
 class HomeCell: UITableViewCell {
     
@@ -148,10 +160,15 @@ class HomeCell: UITableViewCell {
     
     
   override func awakeFromNib() {
+   
     super.awakeFromNib()
+  
   }
+  
   override func prepareForReuse() {
+  
     super.prepareForReuse()
+  
   }
   
 }
